@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class EmployeeMapper {
@@ -38,13 +39,94 @@ private final NoteRepository noteRepository;
         this.noteRepository = noteRepository;
     }
 
-    private Employee toEmployee(EmployeeDTO employeeDTO, Long id){
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Employee with id: " + id + " not found!"));
+
+    public Employee toEmployee(EmployeeDTO employeeDTO, Long id){
+        Employee employee;
+        if(id!=null){
+            employee = employeeRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Employee with id: " + id + " not found!"));
+            updateEmployeeRelations(employee, employeeDTO);
+            updateEmployeeLists(employee, employeeDTO);
+        } else {
+            employee = new Employee();
+            initializeAndSetRelationsForNewEmployee(employee, employeeDTO);
+        }
+
         updateStaticAttributes(employee, employeeDTO);
-        updateEmployeeRelations(employee, employeeDTO);
-        updateEmployeeLists(employee, employeeDTO);
         return employee;
+    }
+
+    private void initializeAndSetRelationsForNewEmployee(Employee employee, EmployeeDTO employeeDTO){
+        setAddressForNewEmployee(employee, employeeDTO);
+        setDepartmentForNewEmployee(employee, employeeDTO);
+        setEvaluationsForNewEmployee(employee, employeeDTO);
+        setEducationsForNewEmployee(employee, employeeDTO);
+        setCertificatesForNewEmployee(employee, employeeDTO);
+        setPastEmploymentsForNewEmployee(employee, employeeDTO);
+        setEmergencyContactsForNewEmployee(employee, employeeDTO);
+        setNotesForNewEmployee(employee, employeeDTO);
+    }
+
+
+    private void setAddressForNewEmployee(Employee employee, EmployeeDTO employeeDTO){
+        if(employeeDTO.getAddressId() != null){
+            Address address = addressRepository.findById(employeeDTO.getAddressId())
+                    .orElseThrow(() -> new EntityNotFoundException("Address with id: " + employeeDTO.getAddressId() + " not found."));
+            employee.setAddress(address);
+        }
+    }
+
+    private void setDepartmentForNewEmployee(Employee employee, EmployeeDTO employeeDTO){
+        if(employeeDTO.getDepartmentId() != null){
+            Department department = departmentRepository.findById(employeeDTO.getDepartmentId())
+                    .orElseThrow(() -> new EntityNotFoundException("Department with id: " + employeeDTO.getAddressId() + " not found."));
+            employee.setDepartment(department);
+        }
+    }
+
+    private void setEvaluationsForNewEmployee(Employee employee, EmployeeDTO employeeDTO){
+        // Convert the list of evaluation IDs from the DTO to a list of Evaluation objects.
+        // This is done by streaming over the IDs, fetching each Evaluation by its ID,
+        // and collecting the results into a list.
+        List<Evaluation> evaluations = employeeDTO.getEvaluations().stream()
+                .map(this::updateEvaluation) //Fetch each evaluation by id
+                .collect(Collectors.toList()); //Collect result in to a list
+        employee.setEvaluations(evaluations);
+    }
+
+    private void setEducationsForNewEmployee(Employee employee, EmployeeDTO employeeDTO){
+        List<Education> educations = employeeDTO.getEducations().stream()
+                .map(this::updateEducation)
+                .collect(Collectors.toList());
+        employee.setEducations(educations);
+    }
+
+    private void setCertificatesForNewEmployee(Employee employee, EmployeeDTO employeeDTO){
+        List<Certification> certifications = employeeDTO.getCertifications().stream()
+                .map(this::updateCertification)
+                .collect(Collectors.toList());
+        employee.setCertifications(certifications);
+    }
+
+    private void setPastEmploymentsForNewEmployee(Employee employee, EmployeeDTO employeeDTO){
+        List<PastEmployment> pastEmployments = employeeDTO.getPastEmployments().stream()
+                .map(this::updatePastEmployment)
+                .collect(Collectors.toList());
+        employee.setEmploymentHistory(pastEmployments);
+    }
+
+    private void setEmergencyContactsForNewEmployee(Employee employee, EmployeeDTO employeeDTO){
+        List<EmergencyContact> emergencyContacts = employeeDTO.getEmergencyContacts().stream()
+                .map(this::updateEmergencyContact)
+                .collect(Collectors.toList());
+        employee.setIce(emergencyContacts);
+    }
+
+    private void setNotesForNewEmployee(Employee employee, EmployeeDTO employeeDTO){
+        List<Note> notes = employeeDTO.getNotes().stream()
+                .map(this::updateNotes)
+                .collect(Collectors.toList());
+        employee.setNotes(notes);
     }
 
     private void updateStaticAttributes(Employee employee, EmployeeDTO employeeDTO){
