@@ -1,6 +1,6 @@
 package com.adrian.employeemanager.mappers;
 
-import com.adrian.employeemanager.DTO.EmployeeDTO;
+import com.adrian.employeemanager.dto.EmployeeDTO;
 import com.adrian.employeemanager.mappers.interfaces.UpdateAction;
 import com.adrian.employeemanager.model.*;
 import com.adrian.employeemanager.repository.*;

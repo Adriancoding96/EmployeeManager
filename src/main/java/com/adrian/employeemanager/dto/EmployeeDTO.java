@@ -1,4 +1,4 @@
-package com.adrian.employeemanager.DTO;
+package com.adrian.employeemanager.dto;
 
 
 import com.adrian.employeemanager.enums.PositionEnum;

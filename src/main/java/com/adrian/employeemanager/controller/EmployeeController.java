@@ -1,7 +1,6 @@
 package com.adrian.employeemanager.controller;
 
-import com.adrian.employeemanager.DTO.EmployeeDTO;
-import com.adrian.employeemanager.controller.interfaces.EntityController;
+import com.adrian.employeemanager.dto.EmployeeDTO;
 import com.adrian.employeemanager.model.Employee;
 import com.adrian.employeemanager.service.interfaces.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +37,12 @@ public class EmployeeController {
     @GetMapping("/employees")
     public ResponseEntity<List<Employee>> findAll() {
         List<Employee> employees = employeeService.getAllEmployees();
+        return ResponseEntity.ok(employees);
+    }
+
+    @GetMapping("/employees/department/{id}")
+    public ResponseEntity<List<Employee>> findAllByDepartment(@PathVariable Long id){
+        List<Employee> employees = employeeService.getAllEmployeesFromDepartment(id);
         return ResponseEntity.ok(employees);
     }
 
