@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EvaluationServiceImpl implements EvaluationService {
@@ -39,8 +41,20 @@ public class EvaluationServiceImpl implements EvaluationService {
     }
 
     @Override
-    public List<Evaluation> getAllEvaluations() {
-        return evaluationRepository.findAll();
+    public List<EvaluationDTO> getAllEvaluations() {
+        List<Evaluation> evaluations = evaluationRepository.findAll();
+        return evaluations.stream()
+                .map(evaluationMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EvaluationDTO> getAllEvaluationsByYear(int year, Long employeeId) {
+        List<Evaluation> evaluations = evaluationRepository.findAllEvaluationsByYearAndEmployeeId(year, employeeId);
+         return evaluations.stream()
+                .map(evaluationMapper::toDTO)
+                .collect(Collectors.toList());
+
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.adrian.employeemanager.model;
 
 import com.adrian.employeemanager.enums.PositionEnum;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -35,13 +38,16 @@ public class Employee implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "address_id", nullable = false)
+    @JsonManagedReference("employee-address")
     private Address address;
 
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
+    @JsonManagedReference("employee-department")
     private Department department;
 
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
+    @JsonManagedReference("employee-evaluation")
     private List<Evaluation> evaluations;
 
     @OneToMany(mappedBy = "employee")
@@ -59,6 +65,10 @@ public class Employee implements Serializable {
     @OneToMany(mappedBy = "employee")
     private List<Certification> certifications;
 
+    @OneToMany(mappedBy = "employee")
+    @JsonManagedReference("employee-timesheet")
+    private List<Timesheet> timesheets;
+
     @Column(nullable = false)
     private LocalDateTime created;
 
@@ -67,25 +77,6 @@ public class Employee implements Serializable {
 
     public Employee(){
 
-    }
-
-    public Employee(Long employeeId, User user, String name, String email, String phoneNumber, PositionEnum position, Address address, Department department, List<Evaluation> evaluations, List<PastEmployment> employmentHistory, List<Education> educations, List<EmergencyContact> ice, List<Note> notes, List<Certification> certifications, LocalDateTime created, LocalDateTime modified) {
-        this.employeeId = employeeId;
-        this.user = user;
-        this.name = name;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.position = position;
-        this.address = address;
-        this.department = department;
-        this.evaluations = evaluations;
-        this.employmentHistory = employmentHistory;
-        this.educations = educations;
-        this.ice = ice;
-        this.notes = notes;
-        this.certifications = certifications;
-        this.created = created;
-        this.modified = modified;
     }
 
     public Long getEmployeeId() {
@@ -142,6 +133,10 @@ public class Employee implements Serializable {
 
     public List<Certification> getCertifications() {
         return certifications;
+    }
+
+    public List<Timesheet> getTimesheets() {
+        return timesheets;
     }
 
     public LocalDateTime getCreated() {
@@ -206,6 +201,10 @@ public class Employee implements Serializable {
 
     public void setCertifications(List<Certification> certifications) {
         this.certifications = certifications;
+    }
+
+    public void setTimesheets(List<Timesheet> timesheets) {
+        this.timesheets = timesheets;
     }
 
     public void setCreated(LocalDateTime created) {

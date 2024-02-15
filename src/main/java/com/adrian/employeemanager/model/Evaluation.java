@@ -1,5 +1,8 @@
 package com.adrian.employeemanager.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -15,12 +18,17 @@ public class Evaluation implements Serializable {
     private Long evaluationId;
 
     @ManyToOne
-    @JoinColumn(name = "mannager_id", nullable = false)
+    @JoinColumn(name = "manager_id", nullable = false)
+    @JsonIgnore
     private Manager manager;
 
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
+    @JsonBackReference("employee-evaluation")
     private Employee employee;
+
+    @Column(nullable = false)
+    private String comment;
 
     @Column(nullable = false)
     private LocalDate dateOfEvaluation;
@@ -34,10 +42,11 @@ public class Evaluation implements Serializable {
     public Evaluation() {
     }
 
-    public Evaluation(Long evaluationId, Manager manager, Employee employee, LocalDate dateOfEvaluation, LocalDateTime created, LocalDateTime modified) {
+    public Evaluation(Long evaluationId, Manager manager, Employee employee, String comment, LocalDate dateOfEvaluation, LocalDateTime created, LocalDateTime modified) {
         this.evaluationId = evaluationId;
         this.manager = manager;
         this.employee = employee;
+        this.comment = comment;
         this.dateOfEvaluation = dateOfEvaluation;
         this.created = created;
         this.modified = modified;
@@ -53,6 +62,10 @@ public class Evaluation implements Serializable {
 
     public Employee getEmployee() {
         return employee;
+    }
+
+    public String getComment() {
+        return comment;
     }
 
     public LocalDate getDateOfEvaluation() {
@@ -77,6 +90,10 @@ public class Evaluation implements Serializable {
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public void setDateOfEvaluation(LocalDate dateOfEvaluation) {

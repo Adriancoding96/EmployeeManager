@@ -72,15 +72,17 @@ CREATE TABLE certifications (
 
 
 CREATE TABLE educations (
-                        education_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                        employee_id BIGINT,
-                        education_type VARCHAR(60) NOT NULL,
-                        degree VARCHAR(60) NOT NULL,
-                        start_date DATE NOT NULL,
-                        created TIMESTAMP NOT NULL,
-                        modified TIMESTAMP NOT NULL,
-                        FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+                            education_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                            employee_id BIGINT,
+                            education_type VARCHAR(60) NOT NULL,
+                            degree VARCHAR(60) NOT NULL,
+                            start_date DATE NOT NULL,
+                            end_date DATE NOT NULL,
+                            created TIMESTAMP NOT NULL,
+                            modified TIMESTAMP NOT NULL,
+                            FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
+
 
 
 CREATE TABLE evaluations (
@@ -90,6 +92,7 @@ CREATE TABLE evaluations (
                              date_of_evaluation DATE NOT NULL,
                              created TIMESTAMP NOT NULL,
                              modified TIMESTAMP NOT NULL,
+                             comment TEXT,
                              FOREIGN KEY (manager_id) REFERENCES managers(manager_id),
                              FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
@@ -99,7 +102,6 @@ CREATE TABLE past_employment (
                             employment_history_id BIGINT PRIMARY KEY AUTO_INCREMENT,
                             employee_id BIGINT,
                             information TEXT NOT NULL,
-                            end_date DATE NOT NULL,
                             created TIMESTAMP NOT NULL,
                             modified TIMESTAMP NOT NULL,
                             FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
@@ -129,6 +131,39 @@ CREATE TABLE notes (
                        modified DATE NOT NULL,
                        FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
+
+CREATE TABLE timesheets (
+                        timesheet_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                        employee_id BIGINT NOT NULL,
+                        month_enum VARCHAR(20),
+                        timesheet_year BIGINT NOT NULL,
+                        approved BOOLEAN NOT NULL,
+                        created TIMESTAMP NOT NULL,
+                        modified TIMESTAMP NOT NULL,
+                        FOREIGN KEY (employee_id) references employees(employee_id)
+);
+
+CREATE TABLE work_days (
+                           work_day_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                           timesheet_id BIGINT NOT NULL,
+                           total_hours INT NOT NULL,
+                           date DATE NOT NULL,
+                           created TIMESTAMP NOT NULL,
+                           modified TIMESTAMP NOT NULL,
+                           FOREIGN KEY (timesheet_id) REFERENCES timesheets(timesheet_id)
+);
+
+CREATE TABLE works (
+                       work_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                       workday_id BIGINT NOT NULL,
+                       hours INT NOT NULL,
+                       work_type VARCHAR(255) NOT NULL,
+                       description TEXT,
+                       created TIMESTAMP NOT NULL,
+                       modified TIMESTAMP NOT NULL,
+                       FOREIGN KEY (workday_id) REFERENCES work_days(work_day_id)
+);
+
 
 
 

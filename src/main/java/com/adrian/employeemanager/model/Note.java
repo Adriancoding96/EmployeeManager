@@ -1,5 +1,7 @@
 package com.adrian.employeemanager.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -15,10 +17,12 @@ public class Note implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = true)
+    @JsonBackReference
     private Employee employee;
 
     @ManyToOne
-    @JoinColumn(name = "interaction_id", nullable = true)
+    @JoinColumn(name = "evaluation_id", nullable = true)
+    @JsonManagedReference
     private Evaluation evaluation;
 
     @Column(nullable = false)

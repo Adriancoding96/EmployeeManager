@@ -1,5 +1,6 @@
 package com.adrian.employeemanager.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -31,9 +32,11 @@ public class Address implements Serializable {
 
     @OneToMany(mappedBy = "address")
     @Column(nullable = true)
+    @JsonBackReference("employee-address")
     private List<Employee> employees;
 
     @OneToMany(mappedBy = "address")
+    @JsonBackReference
     private List<Department> departments;
 
     @Column(nullable = false)
@@ -136,5 +139,21 @@ public class Address implements Serializable {
 
     public void setModified(LocalDateTime modified) {
         this.modified = modified;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "addressId=" + addressId +
+                ", city='" + city + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                ", streetName='" + streetName + '\'' +
+                ", apartmentFloor=" + apartmentFloor +
+                ", apartmentNumber=" + apartmentNumber +
+                ", employees=" + employees +
+                ", departments=" + departments +
+                ", created=" + created +
+                ", modified=" + modified +
+                '}';
     }
 }

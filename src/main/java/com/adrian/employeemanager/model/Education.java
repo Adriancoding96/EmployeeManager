@@ -1,6 +1,7 @@
 package com.adrian.employeemanager.model;
 
 import com.adrian.employeemanager.enums.EducationEnum;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -17,6 +18,7 @@ public class Education  implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = true)
+    @JsonBackReference
     private Employee employee;
 
     @Enumerated(EnumType.STRING)

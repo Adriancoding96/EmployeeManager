@@ -16,6 +16,8 @@ public class EvaluationDTO {
 
     private LocalDate dateOfEvaluation;
 
+    private String comment;
+
     private LocalDateTime created;
 
     private LocalDateTime modified;
@@ -23,11 +25,12 @@ public class EvaluationDTO {
     public EvaluationDTO() {
     }
 
-    public EvaluationDTO(Long evaluationId, Long managerId, Long employeeId, LocalDate dateOfEvaluation, LocalDateTime created, LocalDateTime modified) {
+    public EvaluationDTO(Long evaluationId, Long managerId, Long employeeId, LocalDate dateOfEvaluation, String comment, LocalDateTime created, LocalDateTime modified) {
         this.evaluationId = evaluationId;
         this.managerId = managerId;
         this.employeeId = employeeId;
         this.dateOfEvaluation = dateOfEvaluation;
+        this.comment = comment;
         this.created = created;
         this.modified = modified;
     }
@@ -46,6 +49,10 @@ public class EvaluationDTO {
 
     public LocalDate getDateOfEvaluation() {
         return dateOfEvaluation;
+    }
+
+    public String getComment() {
+        return comment;
     }
 
     public LocalDateTime getCreated() {
@@ -72,6 +79,10 @@ public class EvaluationDTO {
         this.dateOfEvaluation = dateOfEvaluation;
     }
 
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     public void setCreated(LocalDateTime created) {
         this.created = created;
     }
@@ -80,3 +91,4 @@ public class EvaluationDTO {
         this.modified = modified;
     }
 }
+

@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-public class UserController implements EntityController<User, Long> {
+@RequestMapping("/api/v1/")
+public class UserController{
 
     private final UserService userService;
 
@@ -21,35 +22,35 @@ public class UserController implements EntityController<User, Long> {
         this.userService = userService;
     }
 
-    @Override
+
     @PostMapping("/users")
     public ResponseEntity<User> createEntity(@RequestBody User user) {
         User createdUser = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    @Override
+
     @GetMapping("/users/{id}")
     public ResponseEntity<User> findById(@PathVariable Long id) {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
 
-    @Override
+
     @GetMapping("/users")
     public ResponseEntity<List<User>> findAll() {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
-    @Override
+
     @PutMapping("/users/{id}")
     public ResponseEntity<User> updateEntity(@PathVariable Long id, @RequestBody User user) {
         User updatedUser = userService.updateUser(id, user);
         return ResponseEntity.ok(updatedUser);
     }
 
-    @Override
+
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteEntity(@PathVariable Long id) {
         userService.deleteUser(id);

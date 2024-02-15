@@ -1,5 +1,7 @@
 package com.adrian.employeemanager.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -19,9 +21,11 @@ public class Department implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "address_id", nullable = false)
+    @JsonManagedReference
     private Address address;
 
     @OneToMany(mappedBy = "department")
+    @JsonBackReference("employee-department")
     private List<Employee> employees;
 
     @Column(nullable = false)

@@ -1,6 +1,8 @@
 package com.adrian.employeemanager.controller;
 
 import com.adrian.employeemanager.dto.EmployeeDTO;
+import com.adrian.employeemanager.dto.EmployeeSelectionDTO;
+import com.adrian.employeemanager.dto.NewEmployeeDTO;
 import com.adrian.employeemanager.model.Employee;
 import com.adrian.employeemanager.service.interfaces.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@RequestMapping("/api/v1/")
 public class EmployeeController {
 
 
@@ -23,8 +26,8 @@ public class EmployeeController {
     }
 
     @PostMapping("/employees")
-    public ResponseEntity<Employee> createEntity(@RequestBody EmployeeDTO employeeDTO) {
-        Employee createdEmployee = employeeService.createEmployee(employeeDTO);
+    public ResponseEntity<Employee> createEntity(@RequestBody NewEmployeeDTO newEmployeeDTO) {
+        Employee createdEmployee = employeeService.createEmployee(newEmployeeDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdEmployee);
     }
 
@@ -57,5 +60,11 @@ public class EmployeeController {
     public ResponseEntity<Void> deleteEntity(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/employees/selection")
+    public ResponseEntity<List<EmployeeSelectionDTO>> getAllEmployeesAsSelectionDTO(){
+        List<EmployeeSelectionDTO> selectionDTOS = employeeService.getAllEmployeesAsSelectionDTO();
+        return ResponseEntity.ok(selectionDTOS);
     }
 }

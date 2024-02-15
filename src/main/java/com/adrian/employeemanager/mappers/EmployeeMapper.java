@@ -1,13 +1,18 @@
 package com.adrian.employeemanager.mappers;
 
 import com.adrian.employeemanager.dto.EmployeeDTO;
+import com.adrian.employeemanager.dto.EmployeeSelectionDTO;
+import com.adrian.employeemanager.dto.NewEmployeeDTO;
+import com.adrian.employeemanager.enums.PositionEnum;
 import com.adrian.employeemanager.mappers.interfaces.UpdateAction;
 import com.adrian.employeemanager.model.*;
 import com.adrian.employeemanager.repository.*;
+import com.adrian.employeemanager.util.Utils;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -25,9 +30,12 @@ private final CertificationRepository certificationRepository;
 private final PastEmploymentRepository pastEmploymentRepository;
 private final EmergencyContactRepository emergencyContactRepository;
 private final NoteRepository noteRepository;
+private final UserRepository userRepository;
+private final Utils utils;
+
 
     @Autowired
-    public EmployeeMapper(EmployeeRepository employeeRepository, AddressRepository addressRepository, DepartmentRepository departmentRepository, EvaluationRepository evaluationRepository, EducationRepository educationRepository, CertificationRepository certificationRepository, PastEmploymentRepository pastEmploymentRepository, EmergencyContactRepository emergencyContactRepository, NoteRepository noteRepository) {
+    public EmployeeMapper(EmployeeRepository employeeRepository, AddressRepository addressRepository, DepartmentRepository departmentRepository, EvaluationRepository evaluationRepository, EducationRepository educationRepository, CertificationRepository certificationRepository, PastEmploymentRepository pastEmploymentRepository, EmergencyContactRepository emergencyContactRepository, NoteRepository noteRepository, UserRepository userRepository, Utils utils) {
         this.employeeRepository = employeeRepository;
         this.addressRepository = addressRepository;
         this.departmentRepository = departmentRepository;
@@ -37,8 +45,16 @@ private final NoteRepository noteRepository;
         this.pastEmploymentRepository = pastEmploymentRepository;
         this.emergencyContactRepository = emergencyContactRepository;
         this.noteRepository = noteRepository;
+        this.userRepository = userRepository;
+        this.utils = utils;
     }
 
+    public EmployeeSelectionDTO toSelectionDTO(Employee employee){
+        EmployeeSelectionDTO employeeSelectionDTO = new EmployeeSelectionDTO();
+        employeeSelectionDTO.setEmployeeId(employee.getEmployeeId());
+        employeeSelectionDTO.setEmployeeName(employee.getName());
+        return employeeSelectionDTO;
+    }
 
     public Employee toEmployee(EmployeeDTO employeeDTO, Long id){
         Employee employee;
@@ -299,6 +315,54 @@ private final NoteRepository noteRepository;
     private Note updateNotes(Long newId){
         return noteRepository.findById(newId)
                 .orElseThrow(() -> new EntityNotFoundException("Note with id: " + newId + " not found."));
+    }
+
+    public Employee newEmployeFromDTO(NewEmployeeDTO dto) {
+        User user = newUser(dto);
+        user.setCreated(LocalDateTime.now());
+        user.setModified(LocalDateTime.now());
+        userRepository.save(user);
+
+        Employee employee = new Employee();
+        employee.setUser(user);
+        employee.setName(dto.getName());
+        employee.setEmail(dto.getEmail());
+        employee.setPhoneNumber(dto.getPhoneNumber());
+        employee.setPosition(PositionEnum.valueOf(dto.getPosition()));
+
+        Department department = departmentRepository.findById(dto.getDepartmentId())
+                .orElseThrow(() -> new EntityNotFoundException("Department with id: " + dto.getDepartmentId() + " not found."));
+        employee.setDepartment(department);
+
+        Address address = new Address();
+        address.setCity(dto.getAddress().getCity());
+        address.setPostalCode(dto.getAddress().getPostalCode());
+        address.setStreetName(dto.getAddress().getStreetName());
+        address.setApartmentFloor(dto.getAddress().getApartmentFloor());
+        address.setApartmentNumber(dto.getAddress().getApartmentNumber());
+        address.setCreated(LocalDateTime.now());
+        address.setModified(LocalDateTime.now());
+        addressRepository.save(address);
+        employee.setAddress(address);
+
+        return employee;
+    }
+
+    public User newUser(NewEmployeeDTO dto) {
+        String username;
+        boolean userNameExists;
+        do {
+            username = utils.generateRandomUsername();
+            userNameExists = userRepository.findUserByUsername(username).isPresent();
+        } while (userNameExists);
+        String password = utils.generateRandomPassword();
+
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setRole(dto.getRole());
+
+        return user;
     }
 
 }

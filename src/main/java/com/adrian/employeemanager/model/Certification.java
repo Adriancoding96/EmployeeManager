@@ -1,6 +1,7 @@
 package com.adrian.employeemanager.model;
 
 import com.adrian.employeemanager.enums.StatusEnum;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -16,6 +17,7 @@ public class Certification implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
+    @JsonBackReference
     private Employee employee;
 
     @Column(nullable = false)

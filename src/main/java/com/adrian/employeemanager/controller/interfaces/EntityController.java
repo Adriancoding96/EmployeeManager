@@ -11,7 +11,11 @@ public interface EntityController<T, ID> {
 
     ResponseEntity<T> findById(ID id);
 
+    ResponseEntity<T> findByEmployeeId(ID entityId, ID employeeId);
+
     ResponseEntity<List<T>> findAll();
+
+    ResponseEntity<List<T>> findAllByEmployeeId(ID id);
 
     ResponseEntity<T> updateEntity(ID id, T entity);
 

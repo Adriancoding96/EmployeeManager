@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@RequestMapping("/api/v1/")
 public class EvaluationController {
 
     private final EvaluationService evaluationService;
@@ -34,8 +35,14 @@ public class EvaluationController {
     }
 
     @GetMapping("/evaluations")
-    public ResponseEntity<List<Evaluation>> findAll() {
-        List<Evaluation> evaluations = evaluationService.getAllEvaluations();
+    public ResponseEntity<List<EvaluationDTO>> findAll() {
+        List<EvaluationDTO> evaluations = evaluationService.getAllEvaluations();
+        return ResponseEntity.ok(evaluations);
+    }
+
+    @GetMapping("/evaluations/{employeeId}/year/{year}")
+    public ResponseEntity<List<EvaluationDTO>> getEvaluationsByYearAndEmployeeId(@PathVariable Long employeeId, @PathVariable int year) {
+        List<EvaluationDTO> evaluations = evaluationService.getAllEvaluationsByYear(year, employeeId);
         return ResponseEntity.ok(evaluations);
     }
 
@@ -46,7 +53,7 @@ public class EvaluationController {
     }
 
     @DeleteMapping("/evaluations/{id}")
-    public ResponseEntity<Void> deleteEntity(Long id) {
+    public ResponseEntity<Void> deleteEntity(@PathVariable Long id) {
         evaluationService.deleteEvaluation(id);
         return ResponseEntity.noContent().build();
     }

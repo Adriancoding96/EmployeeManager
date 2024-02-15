@@ -24,6 +24,18 @@ public class EvaluationMapper {
         this.employeeRepository = employeeRepository;
     }
 
+    public EvaluationDTO toDTO(Evaluation evaluation) {
+        EvaluationDTO evaluationDTO = new EvaluationDTO();
+        evaluationDTO.setEvaluationId(evaluation.getEvaluationId());
+        evaluationDTO.setManagerId(evaluation.getManager().getManagerId());
+        evaluationDTO.setEmployeeId(evaluation.getEmployee().getEmployeeId());
+        evaluationDTO.setComment(evaluation.getComment());
+        evaluationDTO.setDateOfEvaluation(evaluation.getDateOfEvaluation());
+        evaluationDTO.setCreated(evaluation.getCreated());
+        evaluationDTO.setModified(evaluation.getModified());
+        return evaluationDTO;
+    }
+
     public Evaluation toEvaluation(EvaluationDTO evaluationDTO){
         Evaluation evaluation = new Evaluation();
 
@@ -36,6 +48,7 @@ public class EvaluationMapper {
         evaluation.setManager(manager);
         evaluation.setEmployee(employee);
         evaluation.setDateOfEvaluation(evaluationDTO.getDateOfEvaluation());
+        evaluation.setComment(evaluationDTO.getComment());
 
         return evaluation;
     }

@@ -1,5 +1,7 @@
 package com.adrian.employeemanager.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -24,6 +26,7 @@ public class Manager implements Serializable {
 
     @OneToMany(mappedBy = "manager")
     @Column(nullable = false)
+    @JsonManagedReference
     private List<Evaluation> evaluations;
 
     @Column(nullable = false)

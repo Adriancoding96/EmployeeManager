@@ -1,0 +1,8 @@
+http://localhost:8081/api/v1/education
+http://localhost:8081/api/v1/address
+http://localhost:8081/api/v1/certification
+http://localhost:8081/api/v1/department
+http://localhost:8081/api/v1/ice
+http://localhost:8081/api/v1/evaluations
+http://localhost:8081/api/v1/note
+http://localhost:8081/api/v1/past-employment

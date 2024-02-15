@@ -8,7 +8,8 @@ import java.util.List;
 public interface EvaluationService {
     Evaluation createEvaluation(EvaluationDTO evaluationDTO);
     Evaluation getEvaluationById(Long id);
-    List<Evaluation> getAllEvaluations();
+    List<EvaluationDTO> getAllEvaluations();
+    List<EvaluationDTO> getAllEvaluationsByYear(int year, Long employeeId);
     Evaluation updateEvaluation(Long id, EvaluationDTO evaluationDTO);
     void deleteEvaluation(Long id);
 }
